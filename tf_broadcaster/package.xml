@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>tf_broadcaster</name>
+  <version>0.0.0</version>
+  <description>node to publish tf between frames</description>
+
+  <author email="moritz@auterion.com">Moritz Zimmermann</author>
+  <maintainer email="moritz@auterion.com">Moritz Zimmermann</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>catkin_simple</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf</depend>
+  <depend>roslib</depend>
+</package>
