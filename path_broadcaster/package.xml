@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>path_broadcaster</name>
+  <version>0.0.0</version>
+  <description>node to publish paths from recent poses</description>
+
+  <author email="moritz@auterion.com">Moritz Zimmermann</author>
+  <maintainer email="moritz@auterion.com">Moritz Zimmermann</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>catkin_simple</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>roslib</depend>
+</package>
