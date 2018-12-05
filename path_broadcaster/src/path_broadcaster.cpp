@@ -12,13 +12,17 @@ class PathBroadcaster {
     ros::NodeHandle& _nh;
     ros::Subscriber _gps_sub;
     ros::Subscriber _rovio_sub;
+    ros::Subscriber _vins_sub;
     ros::Publisher _gps_path_pub;
     ros::Publisher _rovio_path_pub;
+    ros::Publisher _vins_path_pub;
     nav_msgs::Path _gps_path;
     nav_msgs::Path _rovio_path;
+    nav_msgs::Path _vins_path;
 
     void gpsCallback(const geometry_msgs::PoseStamped& msg);
-    void vioCallback(const nav_msgs::Odometry& msg);
+    void rovioCallback(const nav_msgs::Odometry& msg);
+    void vinsCallback(const nav_msgs::Odometry& msg);
 };
 
 PathBroadcaster::PathBroadcaster(ros::NodeHandle& nh) : _nh(nh) {}
@@ -31,7 +35,7 @@ void PathBroadcaster::gpsCallback(const geometry_msgs::PoseStamped& msg) {
   _gps_path_pub.publish(_gps_path);
 }
 
-void PathBroadcaster::vioCallback(const nav_msgs::Odometry& msg) {
+void PathBroadcaster::rovioCallback(const nav_msgs::Odometry& msg) {
   _rovio_path.header = msg.header;
   geometry_msgs::PoseStamped vio_pose;
   vio_pose.pose = msg.pose.pose;
@@ -41,12 +45,24 @@ void PathBroadcaster::vioCallback(const nav_msgs::Odometry& msg) {
   _rovio_path_pub.publish(_rovio_path);
 }
 
+void PathBroadcaster::vinsCallback(const nav_msgs::Odometry& msg) {
+  _vins_path.header = msg.header;
+  geometry_msgs::PoseStamped vio_pose;
+  vio_pose.pose = msg.pose.pose;
+  vio_pose.header = msg.header;
+
+  _vins_path.poses.push_back(vio_pose);
+  _vins_path_pub.publish(_vins_path);
+}
+
 void PathBroadcaster::setup() {
   _gps_sub = _nh.subscribe("mavros/local_position/pose", 10, &PathBroadcaster::gpsCallback, this);
-  _rovio_sub = _nh.subscribe("rovio/odometry", 10, &PathBroadcaster::vioCallback, this);  
+  _rovio_sub = _nh.subscribe("rovio/odometry", 10, &PathBroadcaster::rovioCallback, this);  
+  _vins_sub = _nh.subscribe("vins_estimator/odometry", 10, &PathBroadcaster::vinsCallback, this);  
 
   _gps_path_pub = _nh.advertise<nav_msgs::Path>("path_gps", 1000);
-  _rovio_path_pub = _nh.advertise<nav_msgs::Path>("path_vio", 1000);
+  _rovio_path_pub = _nh.advertise<nav_msgs::Path>("path_rovio", 1000);
+  _vins_path_pub = _nh.advertise<nav_msgs::Path>("path_vins", 1000);
 }   
 
 int main(int argc, char** argv){
